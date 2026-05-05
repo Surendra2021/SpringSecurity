@@ -1,7 +1,9 @@
 package com.example.SpringJWT.service;
 
+import com.example.SpringJWT.entity.Role;
 import com.example.SpringJWT.entity.User;
 import com.example.SpringJWT.repository.UserRepository;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,14 +25,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        // Convert single role string → Spring Security authority
-        // e.g. "ADMIN" → SimpleGrantedAuthority("ROLE_ADMIN")
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
+        // Convert each Role entity → Spring Security authority
+        // e.g. Role{name="ADMIN"} → SimpleGrantedAuthority("ROLE_ADMIN")
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                List.of(authority)
+                authorities
         );
     }
 }
