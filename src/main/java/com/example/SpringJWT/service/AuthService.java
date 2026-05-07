@@ -1,6 +1,8 @@
 package com.example.SpringJWT.service;
 
 import com.example.SpringJWT.config.AppProperties;
+import com.example.SpringJWT.exception.InvalidPasswordException;
+import com.example.SpringJWT.exception.UserAlreadyExistsException;
 import com.example.SpringJWT.dto.request.AuthRequest;
 import com.example.SpringJWT.dto.request.RegisterRequest;
 import com.example.SpringJWT.entity.Role;
@@ -48,13 +50,13 @@ public class AuthService {
     public String register(RegisterRequest request) {
 
         if (request.getPassword().length() < appProperties.getPasswordMinLength()) {
-            throw new RuntimeException("Password must be at least " + appProperties.getPasswordMinLength() + " characters");
+            throw new InvalidPasswordException("Password must be at least " + appProperties.getPasswordMinLength() + " characters");
         }
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistsException("Username already exists");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("UserEmail already exists");
+            throw new UserAlreadyExistsException("Email already exists");
         }
 
         // If no roles sent, default to USER

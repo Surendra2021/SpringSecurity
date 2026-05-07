@@ -1,6 +1,7 @@
 package com.example.SpringJWT.controller;
 
 import com.example.SpringJWT.dto.response.UserResponse;
+import com.example.SpringJWT.exception.UserNotFoundException;
 import com.example.SpringJWT.service.AuthService;
 import com.example.SpringJWT.dto.request.AuthRequest;
 import com.example.SpringJWT.dto.request.RegisterRequest;
@@ -98,7 +99,7 @@ public class AuthController {
 
     @GetMapping("/users")
     public UserResponse getUsers(Authentication authentication) {
-        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException("User not found"));
         UserResponse response = new UserResponse();
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
