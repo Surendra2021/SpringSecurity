@@ -16,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 /**
  * ╔══════════════════════════════════════════════════════════════╗
@@ -67,7 +68,7 @@ public class AuthController {
      *                 401 Unauthorized if credentials are wrong
      */
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
 
         /**
          * ── Step 4: Return token in response body ──────────────────────
@@ -90,7 +91,7 @@ public class AuthController {
      * - Returns JWT for immediate authenticated use
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
 
 
         String jwtToken = authService.register(request);

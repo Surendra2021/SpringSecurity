@@ -5,6 +5,7 @@ import com.example.SpringJWT.exception.UserAlreadyExistsException;
 import com.example.SpringJWT.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -12,6 +13,18 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    // 400 Bad Request — @Valid annotation failed on request fields
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException e) {
+        Map<String, String> errors = new HashMap<>();
+        for (int i = 0; i < e.getBindingResult().getFieldErrors().size(); i++) {
+            String field = e.getBindingResult().getFieldErrors().get(i).getField();
+            String message = e.getBindingResult().getFieldErrors().get(i).getDefaultMessage();
+            errors.put(field, message);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
 
     // 409 Conflict — username or email already taken
     @ExceptionHandler(UserAlreadyExistsException.class)
