@@ -70,6 +70,7 @@ public class SecurityConfig {
                 // permitAll() → no JWT required for these URLs
                 // /api/auth/** covers /api/auth/login and /api/auth/register
                 .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
 
                 // anyRequest().authenticated() → EVERY other URL needs a valid JWT.

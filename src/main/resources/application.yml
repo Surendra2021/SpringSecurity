@@ -17,6 +17,15 @@ spring:
 # ─────────────────────────────────────────────────
 # JWT Configuration
 # ─────────────────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,beans,env  # which endpoints to expose
+  endpoint:
+    health:
+      show-details: always  # show DB connection status in health check
+
 app:
   password-min-length: 6
 
