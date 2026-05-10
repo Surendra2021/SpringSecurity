@@ -2,6 +2,7 @@ package com.example.SpringJWT.controller;
 
 import com.example.SpringJWT.dto.response.UserResponse;
 import com.example.SpringJWT.exception.UserNotFoundException;
+import com.example.SpringJWT.mapper.UserMapper;
 import com.example.SpringJWT.service.AuthService;
 import com.example.SpringJWT.dto.request.AuthRequest;
 import com.example.SpringJWT.dto.request.RegisterRequest;
@@ -57,6 +58,9 @@ public class AuthController {
     // BCrypt encoder bean configured in SecurityConfig
     private final PasswordEncoder passwordEncoder;
 
+    // MapStruct mapper — auto-maps User entity → UserResponse DTO
+    private final UserMapper userMapper;
+
     /**
      * POST /api/auth/login
      *
@@ -101,7 +105,7 @@ public class AuthController {
     @GetMapping("/users")
     public UserResponse getUsers(Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        return UserResponse.fromUser(user);
+        return userMapper.toUserResponse(user);
     }
 }
 
