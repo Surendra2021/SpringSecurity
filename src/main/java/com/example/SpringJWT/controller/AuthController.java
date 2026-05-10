@@ -101,10 +101,7 @@ public class AuthController {
     @GetMapping("/users")
     public UserResponse getUsers(Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        UserResponse response = new UserResponse();
-        response.setUsername(user.getUsername());
-        response.setEmail(user.getEmail());
-        return response;
+        return UserResponse.fromUser(user);
     }
 }
 
