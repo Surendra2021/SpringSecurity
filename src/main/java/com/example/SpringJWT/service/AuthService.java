@@ -32,8 +32,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository; // to look up or create roles
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NotificationService notificationService;
 
     public String authenticate(AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -100,6 +101,9 @@ public class AuthService {
                 user.getPassword(),
                 authorities
         );
+
+        // runs in background — user gets token immediately without waiting for email
+        notificationService.sendWelcomeEmail(user.getUsername());
 
         return jwtService.generateToken(userDetails);
     }
