@@ -1,24 +1,27 @@
 package com.example.SpringJWT.service;
 
+import com.example.SpringJWT.event.UserRegisteredEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
 
-    // @Async — Spring runs this method in a separate background thread
-    // the caller does not wait for this to finish
+    // @EventListener — Spring calls this method when UserRegisteredEvent is published
+    // @Async — runs in background so user doesn't wait
     @Async
-    public void sendWelcomeEmail(String username) {
+    @EventListener
+    public void sendWelcomeEmail(UserRegisteredEvent event) {
 
-        // simulating email sending delay — 3 seconds
+        // simulating email sending delay
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
-        // in real project — you'd use JavaMailSender here to send actual email
-        System.out.println("Welcome email sent to: " + username);
+        // in real project — send actual email here
+        System.out.println("Welcome email sent to: " + event.getUsername());
     }
 }
