@@ -1,7 +1,6 @@
 package com.example.SpringJWT.service;
 
 import com.example.SpringJWT.config.AppProperties;
-import com.example.SpringJWT.event.UserRegisteredEvent;
 import com.example.SpringJWT.exception.InvalidPasswordException;
 import com.example.SpringJWT.exception.UserAlreadyExistsException;
 import com.example.SpringJWT.dto.request.AuthRequest;
@@ -18,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +34,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    // Spring's built-in event publisher — fires events to any listener
-    private final ApplicationEventPublisher eventPublisher;
 
     public String authenticate(AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -104,10 +100,6 @@ public class AuthService {
                 user.getPassword(),
                 authorities
         );
-
-        // fire event — AuthService doesn't know or care who listens
-        // NotificationService will pick this up automatically
-        eventPublisher.publishEvent(new UserRegisteredEvent(user.getUsername()));
 
         return jwtService.generateToken(userDetails);
     }
