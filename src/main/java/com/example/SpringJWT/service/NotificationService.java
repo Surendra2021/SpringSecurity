@@ -2,15 +2,12 @@ package com.example.SpringJWT.service;
 
 import com.example.SpringJWT.event.UserRegisteredEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
 
     // @EventListener — Spring calls this method when UserRegisteredEvent is published
-    // @Async — runs in background so user doesn't wait
-    @Async
     @EventListener
     public void sendWelcomeEmail(UserRegisteredEvent event) {
 
