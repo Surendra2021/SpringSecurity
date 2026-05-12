@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CacheEvict;
 
 /**
  * ╔══════════════════════════════════════════════════════════════╗
@@ -94,14 +96,17 @@ public class AuthController {
      * - Defaults role to USER when missing/blank
      * - Returns JWT for immediate authenticated use
      */
+    // @CacheEvict — clears cached user data when new user registers
+    @CacheEvict(value = "users", allEntries = true)
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-
-
         String jwtToken = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(AuthResponse.builder().token(jwtToken).build());
     }
 
+    // @Cacheable — stores result in Redis with key = username
+    // next call with same username → returns from Redis, skips DB query
+    @Cacheable(value = "users", key = "#authentication.name")
     @GetMapping("/users")
     public UserResponse getUsers(Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).orElseThrow(() -> new UserNotFoundException("User not found"));

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 // @ExtendWith(MockitoExtension.class) — tells JUnit to use Mockito
 // so @Mock and @InjectMocks annotations work
-@ExtendWith(5.class)
+@ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
     // @Mock — creates a fake version of each dependency
@@ -48,6 +49,10 @@ class AuthServiceTest {
 
     @Mock
     private AppProperties appProperties;
+
+    // mock the event publisher so publishEvent() doesn't throw NullPointerException
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     // @InjectMocks — creates a real AuthService
     // and injects all the @Mock objects above into it
